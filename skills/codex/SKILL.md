@@ -35,6 +35,15 @@ Long prompts: pipe via stdin (`codex exec -s workspace-write - < brief.md`) inst
 
 **Run in the background.** Codex tasks routinely take 2–15 minutes. Use `run_in_background: true` with a generous `timeout`, and continue other work (or verification prep) while it runs. Capture the final message with `-o /tmp/codex-out.md` so you can read the result cleanly instead of parsing the full log.
 
+**Make workers watchable.** Pipe every worker's live stream to a log the user can follow read-only from another terminal:
+
+```bash
+LOGS=~/.codex-conductor/logs/$(date +%Y%m%d-%H%M%S); mkdir -p "$LOGS"
+codex exec -s workspace-write -o "$LOGS/worker-auth.result.md" "..." 2>&1 | tee "$LOGS/worker-auth.log"
+```
+
+After launching workers, tell the user the watch command — one worker: `tail -f "$LOGS/worker-auth.log"`; whole fleet in one pane: `tail -f "$LOGS"/*.log`. The logs show Codex's reasoning, commands, and diffs as they happen without any way to interfere with the run.
+
 ## Getting the best output from Codex
 
 Codex does not see your conversation. It starts cold in the repo. Everything it needs must be in the brief. Write briefs like a great ticket:

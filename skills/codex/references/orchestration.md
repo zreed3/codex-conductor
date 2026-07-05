@@ -5,7 +5,7 @@ You (Claude) are the orchestrator; each `codex exec` background run is a worker.
 ## Ground rules
 
 1. **One brief, one outcome per worker.** Workers don't see each other or your conversation. Each brief must be self-contained (context, task, constraints, definition of done, output contract).
-2. **Every worker gets its own `-o` file** in the scratchpad (`worker-<name>.md`), so results are cleanly readable.
+2. **Every worker gets its own `-o` file** in the scratchpad (`worker-<name>.md`), so results are cleanly readable — and its live stream tee'd to `~/.codex-conductor/logs/<run>/worker-<name>.log` (see "Make workers watchable" in SKILL.md). After launching a fleet, print the user one watch command: `tail -f <logdir>/*.log`.
 3. **Launch all independent workers in the same turn** with `run_in_background: true`, then process completion notifications as they arrive. Don't launch serially what can run in parallel.
 4. **Cap concurrency at ~4–6 workers.** More burns tokens faster than you can verify and risks rate limits.
 5. **Route by tier** (see SKILL.md table): scouts and mechanical work → fast tier; implementation → standard; adjudication/hard problems → deep tier.
